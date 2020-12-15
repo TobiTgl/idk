@@ -38,7 +38,7 @@ app.get('/matches', (req, res) => {
   pool.query('SELECT * FROM match').then(results => {
     res.json(results.rows);
   })
-})
+}) 
 
 app.get('/games', (req, res) => {
   
@@ -454,4 +454,4 @@ app.post('/login', passport.authenticate('basic', {session: false}), (req, res)=
 
 
 
-app.listen(process.env.PORT || 4000)
+app.listen(process.env.PORT || 4  000)
