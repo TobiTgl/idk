@@ -35,7 +35,7 @@ app.get('/', (req, res) => {
 })
 
 app.get('/user', (req, res) => {
-  pool.query('SELECT * FROM users WHERE id=$1',[1]).then(results => {
+  pool.query('SELECT * FROM users WHERE id=$1',[3]).then(results => {
       
     res.json(results.rows)
     
