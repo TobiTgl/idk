@@ -404,12 +404,12 @@ for (x = 0; x<csgoData.length; x++) {
     } 
     
   }
-/*
+
   for (x = 0; x<lolTournamentTeams.length; x++) {
     let lolTeams = lolTournamentTeams[x].teams
     let tournament_id = lolTournamentTeams[x].tournament_id
 
-    pool.query('update tournaments set teams = ($1) where id = ($2)' , [lolTeams, tournament_id], (error, results) => {
+    pool.query('update tournaments set teams = ($1) where tournament_id = ($2)' , [lolTeams, tournament_id], (error, results) => {
       if (error) {
         throw error
       }
@@ -419,12 +419,12 @@ for (x = 0; x<csgoData.length; x++) {
     let csgoTeams = csgoTournamentTeams[x].teams
     let tournament_id = lolTournamentTeams[x].tournament_id
 
-    pool.query('update tournaments set teams = ($1) where id = ($2)' , [csgoTeams, tournament_id], (error, results) => {
+    pool.query('update tournaments set teams = ($1) where tournament_id = ($2)' , [csgoTeams, tournament_id], (error, results) => {
       if (error) {
         throw error
       }
     })
-  }*/
+  }
 })).catch(errors => {
   console.log(errors)
 })
