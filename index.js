@@ -34,11 +34,10 @@ app.get('/', (req, res) => {
   res.send('Hello World!')
 })
 
-app.get('/user', (req, res) => {
+app.get('/user', passport.authenticate('basic', {session: false}), (req, res) => {
   pool.query('SELECT * FROM users WHERE id=$1',[3]).then(results => {
-      
-    res.json(results.rows)
     
+    res.json(results.rows);
     res.sendStatus(200);          
 })
 })
@@ -405,7 +404,7 @@ for (x = 0; x<csgoData.length; x++) {
     } 
     
   }
-/*
+
   for (x = 0; x<lolTournamentTeams.length; x++) {
     let lolTeams = lolTournamentTeams[x].teams
     let tournament_id = lolTournamentTeams[x].tournament_id
@@ -425,7 +424,7 @@ for (x = 0; x<csgoData.length; x++) {
         throw error
       }
     })
-  }*/
+  }
 })).catch(errors => {
   console.log(errors)
 })
