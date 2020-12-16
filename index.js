@@ -131,13 +131,19 @@ let jsonMas = null;
 
 let one = 'https://api.pandascore.co/lol/matches?token=6W1WQp6WMqtt7LmweMkgLv6YyoUMhauuKE1ABezjHsFPD1GNU6U'
 let two = 'https://api.pandascore.co/csgo/matches?token=6W1WQp6WMqtt7LmweMkgLv6YyoUMhauuKE1ABezjHsFPD1GNU6U'
+let three = 'https://api.pandascore.co/lol/tournaments?token=6W1WQp6WMqtt7LmweMkgLv6YyoUMhauuKE1ABezjHsFPD1GNU6U'
+let four = 'https://api.pandascore.co/csgo/tournaments?token=6W1WQp6WMqtt7LmweMkgLv6YyoUMhauuKE1ABezjHsFPD1GNU6U'
 
 const requestOne = axios.get(one);
 const requestTwo = axios.get(two);
+const requestThree = axios.get(three);
+const requestFour = axios.get(four);
 
-axios.all([requestOne, requestTwo]).then(axios.spread((...responses) => {
+axios.all([requestOne, requestTwo, requestThree, requestFour]).then(axios.spread((...responses) => {
   const responseOne = responses[0].data
   const responseTwo = responses[1].data
+  const responseThree = responses[2].data
+  const responseFour = responses[3].data
   
 })).catch(errors => {
   // react on errors.
@@ -150,9 +156,11 @@ var job = new CronJob('0 */1 * * * *', function(){
 
 console.log('test') 
 
-axios.all([requestOne, requestTwo]).then(axios.spread((...responses) => {
+axios.all([requestOne, requestTwo, requestThree, requestFour]).then(axios.spread((...responses) => {
   const jsonMas = responses[0].data
   const csgoData = responses[1].data
+  const lolTournamentTeams = responses[2].data
+  const csgoTournamentTeams = responses[3].data
 
 /*axios.get('https://api.pandascore.co/csgo/matches?token=6W1WQp6WMqtt7LmweMkgLv6YyoUMhauuKE1ABezjHsFPD1GNU6U')//this is a promise object
 .then((response) => { //javascrip promise --then
@@ -196,7 +204,7 @@ for (x = 0; x<jsonMas.length; x++) {
     let match_team1_id = jsonMas[x].opponents[y].opponent.id
     let match_team2_id = jsonMas[x].opponents[y+1].opponent.id
 
-//Match query
+ //Match query
   
 pool.query('INSERT INTO match(match_id, name, match_type, tournament_id, serie_id, team1_id, team2_id, league_id, number_of_games, winner_id, begin_at, end_at, official_stream_url) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) ON CONFLICT (match_id) DO UPDATE SET match_id= excluded.match_id, name= excluded.name, match_type= excluded.match_type, tournament_id= excluded.tournament_id, serie_id= excluded.serie_id, team1_id= excluded.team1_id, team2_id= excluded.team2_id, league_id= excluded.league_id, number_of_games= excluded.number_of_games, winner_id= excluded.winner_id, begin_at= excluded.begin_at, end_at= excluded.end_at, official_stream_url= excluded.official_stream_url' , [match_id, match_name, match_type, tournament_id, serie_id, match_team1_id, match_team2_id, league_id, number_of_games, winner_id, begin_at, end_at, official_stream_url], (error, results) => {
   if (error) { //ON CONFLICT (match_id) DO NOTHING 
@@ -324,7 +332,7 @@ for (x = 0; x<csgoData.length; x++) {
     }
   })
 
-//Leagues query
+ //Leagues query
 
   pool.query('INSERT INTO leagues(league_id, videogame_id, image_url, name, url) VALUES($1, $2, $3, $4, $5) ON CONFLICT (league_id) DO UPDATE SET league_id=excluded.league_id, videogame_id= excluded.videogame_id, image_url=excluded.image_url, name=excluded.name, url=excluded.url', [league_id, videogame_id= videogame_id,  league_image_url, league_name, league_url], (error, results) => {
     if (error) {
@@ -394,6 +402,27 @@ for (x = 0; x<csgoData.length; x++) {
       })  
     } 
     
+  }
+
+  for (x = 0; x<lolTournamentTeams.length; x++) {
+    let lolTeams = lolTournamentTeams[x].teams
+    let tournament_id = lolTournamentTeams[x].tournament_id
+
+    pool.query('update tournaments set teams = ($1) where id = ($2)' , [lolTeams, tournament_id], (error, results) => {
+      if (error) {
+        throw error
+      }
+    })
+  }
+  for (x = 0; x<csgoTournamentTeams.length; x++) {
+    let csgoTeams = csgoTournamentTeams[x].teams
+    let tournament_id = lolTournamentTeams[x].tournament_id
+
+    pool.query('update tournaments set teams = ($1) where id = ($2)' , [csgoTeams, tournament_id], (error, results) => {
+      if (error) {
+        throw error
+      }
+    })
   }
 })).catch(errors => {
   console.log(errors)
