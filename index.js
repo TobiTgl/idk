@@ -35,7 +35,7 @@ app.get('/', (req, res) => {
 })
 
 app.get('/user', passport.authenticate('basic', {session: false}), (req, res) => {
-  console.log(req.user)
+  res.json(req.user)
 })
 
 app.post('/favouriteTeam', (req, res) => {
