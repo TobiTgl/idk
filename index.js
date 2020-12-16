@@ -116,7 +116,7 @@ app.get('/team', (req, res) => {
 })
 app.get('/tournaments', (req, res) => {
   
-  pool.query('SELECT public.tournaments.id, public.tournaments.begin_at, public.tournaments.end_at, public.tournaments.tournament_id, public.tournaments.league_id, prizepool, public.tournaments.serie_id, public.tournaments.name, public.tournaments.winner_id, teams, videogame_id FROM public.leagues inner join match on public.leagues.league_id = public.match.league_id inner join tournaments on public.match.tournament_id = public.tournaments.tournament_id').then(results => {
+  pool.query("SELECT public.tournaments.id, public.tournaments.begin_at, public.tournaments.end_at, public.tournaments.tournament_id, public.tournaments.league_id, prizepool, public.tournaments.serie_id, public.tournaments.name, public.tournaments.winner_id, teams, videogame_id FROM public.leagues inner join match on public.leagues.league_id = public.match.league_id inner join tournaments on public.match.tournament_id = public.tournaments.tournament_id order by to_timestamp(public.tournaments.begin_at, 'YYYY-MM-DD') desc").then(results => {
     res.json(results.rows);
   })
 })
