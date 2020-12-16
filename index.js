@@ -23,7 +23,6 @@ app.use(
 
 const pool = new Pool({
   
-  
   user: 'mzvruebchhmeij',
   host: 'ec2-54-225-214-37.compute-1.amazonaws.com',
   database: 'd6neapffcb6jah',
@@ -35,12 +34,8 @@ app.get('/', (req, res) => {
   res.send('Hello World!')
 })
 
-app.get('/user', passport.authenticate('basic', { session: false }), (req, res) => {
-  pool.query('SELECT * FROM users WHERE id=$1',[2]).then(results => {
-    console.log(req)
-        res.json(results.rows);  
-        res.sendStatus(200);          
-  })
+app.get('/user', passport.authenticate('basic', {session: false}), (req, res) => {
+  console.log(req.user)
 })
 
 app.post('/favouriteTeam', (req, res) => {
