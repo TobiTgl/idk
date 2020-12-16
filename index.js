@@ -34,8 +34,14 @@ app.get('/', (req, res) => {
   res.send('Hello World!')
 })
 
-app.get('/user', passport.authenticate('basic', {session: false}), (req, res) => {
-  res.json(req.user)
+app.get('/user', (req, res) => {
+  pool.query('SELECT * FROM users WHERE id=$1',[req.user.id]).then(results => {
+    res.json(req.user);
+    console.log(req.user)  
+    console.log(results.rows)
+    console.log(req.body)
+    res.sendStatus(200);          
+})
 })
 
 app.post('/favouriteTeam', (req, res) => {
