@@ -23,6 +23,7 @@ app.use(
 
 const pool = new Pool({
   
+  
   user: 'mzvruebchhmeij',
   host: 'ec2-54-225-214-37.compute-1.amazonaws.com',
   database: 'd6neapffcb6jah',
@@ -35,7 +36,7 @@ app.get('/', (req, res) => {
 })
 
 app.get('/user', passport.authenticate('basic', { session: false }), (req, res) => {
-  db.query('SELECT * FROM users WHERE id=$1',[req.user.id]).then(results => {
+  pool.query('SELECT * FROM users WHERE id=$1',[req.user.id]).then(results => {
         res.json(results);  
         res.sendStatus(200);          
   })
