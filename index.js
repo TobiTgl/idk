@@ -47,6 +47,12 @@ app.post('/favouriteTeam', (req, res) => {
     res.json(results.rows);
   })
 })
+app.post('/bets', (req, res) => {
+  
+  pool.query('Insert into bets(users_id, bonus, match_id, bet, status, datestamp) values ($1, $2, $3, $4, $5, $6)', [req.body.users_id, req.body.bonus, req.body.match_id, req.body.bet, req.body.status, req.body.datestamp]).then(results => {
+    res.json(results.rows);
+  })
+})
 
 app.get('/matches', (req, res) => {
   
@@ -64,7 +70,14 @@ app.get('/games', (req, res) => {
 
 app.get('/pastmatches', (req, res) => {
   
-  pool.query('SELECT ns.id, match_id, ns."name" as match_name, public.tournaments."name" as tournament_name, match_type, ns.tournament_id, team1_id, team2_id, ns.winner_id, ns.begin_at, official_stream_url, team1."name" as team1_name, team1.image_url as team1_url, team2."name" as team2_name, team2.image_url as team2_url, ns.number_of_games,(select count (s.id) from games as s where s.winner_id = ns.team1_id and s.match_id = ns.match_id) as team1_score,(select count (s.id) from games as s where s.winner_id = ns.team2_id and s.match_id = ns.match_id) as team2_score FROM public."match" as ns inner join public.tournaments on ns.tournament_id = public.tournaments .tournament_id inner join public.team as team1 on ns.team1_id = team1.team_id inner join public.team as team2 on ns.team2_id = team2.team_id').then(results => {
+  pool.query("SELECT ns.id, match_id, ns.name as match_name, public.tournaments.name as tournament_name, match_type, ns.tournament_id, team1_id, team2_id, ns.winner_id, ns.begin_at, official_stream_url, team1.name as team1_name, team1.image_url as team1_url, team2.name as team2_name, team2.image_url as team2_url, ns.number_of_games,(select count (s.id) from games as s where s.winner_id = ns.team1_id and s.match_id = ns.match_id) as team1_score,(select count (s.id) from games as s where s.winner_id = ns.team2_id and s.match_id = ns.match_id) as team2_score, videogame_id FROM public.match as ns inner join public.tournaments on ns.tournament_id = public.tournaments .tournament_id inner join public.team as team1 on ns.team1_id = team1.team_id inner join public.team as team2 on ns.team2_id = team2.team_id inner join leagues on ns.league_id  = leagues.league_id  where to_timestamp(ns.begin_at, 'YYYY-MM-DD') < now() order by to_timestamp(ns.begin_at, 'YYYY-MM-DD') desc").then(results => {
+    res.json(results.rows);
+  })
+})
+
+app.get('/futurematches', (req, res) => {
+  
+  pool.query("SELECT ns.id, match_id, ns.name as match_name, public.tournaments.name as tournament_name, match_type, ns.tournament_id, team1_id, team2_id, ns.winner_id, ns.begin_at, official_stream_url, team1.name as team1_name, team1.image_url as team1_url, team2.name as team2_name, team2.image_url as team2_url, ns.number_of_games,(select count (s.id) from games as s where s.winner_id = ns.team1_id and s.match_id = ns.match_id) as team1_score,(select count (s.id) from games as s where s.winner_id = ns.team2_id and s.match_id = ns.match_id) as team2_score, videogame_id FROM public.match as ns inner join public.tournaments on ns.tournament_id = public.tournaments .tournament_id inner join public.team as team1 on ns.team1_id = team1.team_id inner join public.team as team2 on ns.team2_id = team2.team_id inner join leagues on ns.league_id  = leagues.league_id  where to_timestamp(ns.begin_at, 'YYYY-MM-DD') > now() order by to_timestamp(ns.begin_at, 'YYYY-MM-DD')").then(results => {
     res.json(results.rows);
   })
 })
