@@ -36,9 +36,8 @@ app.get('/', (req, res) => {
 })
 
 app.get('/user', passport.authenticate('basic', { session: false }), (req, res) => {
-  pool.query('SELECT * FROM users WHERE id=$1',[req.user.id]).then(results => {
+  pool.query('SELECT * FROM users WHERE id=$1',[2]).then(results => {
     console.log(req)
-    console.log(results)
         res.json(results.rows);  
         res.sendStatus(200);          
   })
