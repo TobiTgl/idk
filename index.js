@@ -22,6 +22,7 @@ app.use(
 )
 
 const pool = new Pool({
+  
   user: 'mzvruebchhmeij',
   host: 'ec2-54-225-214-37.compute-1.amazonaws.com',
   database: 'd6neapffcb6jah',
@@ -31,6 +32,20 @@ const pool = new Pool({
 
 app.get('/', (req, res) => {
   res.send('Hello World!')
+})
+
+app.get('/user', passport.authenticate('basic', { session: false }), (req, res) => {
+  db.query('SELECT * FROM users WHERE id=$1',[req.user.id]).then(results => {
+        res.json(results);  
+        res.sendStatus(200);          
+  })
+})
+
+app.post('/favouriteTeam', (req, res) => {
+  
+  pool.query('Update users set favorite_team_id = ($1) where id = ($2)', [req.body.favourite_team_id, req.body.user_id]).then(results => {
+    res.json(results.rows);
+  })
 })
 
 app.get('/matches', (req, res) => {
@@ -43,6 +58,13 @@ app.get('/matches', (req, res) => {
 app.get('/games', (req, res) => {
   
   pool.query('SELECT * FROM games').then(results => {
+    res.json(results.rows);
+  })
+})
+
+app.get('/pastmatches', (req, res) => {
+  
+  pool.query('SELECT ns.id, match_id, ns."name" as match_name, public.tournaments."name" as tournament_name, match_type, ns.tournament_id, team1_id, team2_id, ns.winner_id, ns.begin_at, official_stream_url, team1."name" as team1_name, team1.image_url as team1_url, team2."name" as team2_name, team2.image_url as team2_url, ns.number_of_games,(select count (s.id) from games as s where s.winner_id = ns.team1_id and s.match_id = ns.match_id) as team1_score,(select count (s.id) from games as s where s.winner_id = ns.team2_id and s.match_id = ns.match_id) as team2_score FROM public."match" as ns inner join public.tournaments on ns.tournament_id = public.tournaments .tournament_id inner join public.team as team1 on ns.team1_id = team1.team_id inner join public.team as team2 on ns.team2_id = team2.team_id').then(results => {
     res.json(results.rows);
   })
 })
@@ -380,6 +402,8 @@ app.post('/register', (req,res) =>{
   let password = req.body.password.trim();
   let email = req.body.email.trim();
 
+  console.log(req.body)
+
   console.log(username.length);
 
   if((typeof username === "string") &&
@@ -394,7 +418,7 @@ app.post('/register', (req,res) =>{
         console.log(dbResults);
         res.sendStatus(201);
     })
-    .catch(error => res.sendStatus(500));
+    .catch(error => error);//res.sendStatus(500)
 
     
   }
@@ -445,7 +469,7 @@ passport.use( new passportHttp.BasicStrategy((username, password, cb) => {
   }}));
 
 app.post('/login', passport.authenticate('basic', {session: false}), (req, res)=>{
-  console.log('test');
+  console.log(req.user);
   res.sendStatus(200);
 })
 
