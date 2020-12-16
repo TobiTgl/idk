@@ -409,6 +409,7 @@ for (x = 0; x<csgoData.length; x++) {
     let lolTeams = lolTournamentTeams[x].teams
     let tournament_id = lolTournamentTeams[x].tournament_id
 
+    console.log('update tournaments set teams = ($1) where tournament_id = ($2)' , [lolTeams, tournament_id])
     pool.query('update tournaments set teams = ($1) where tournament_id = ($2)' , [lolTeams, tournament_id], (error, results) => {
       if (error) {
         throw error
