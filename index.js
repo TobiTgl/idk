@@ -404,7 +404,7 @@ for (x = 0; x<csgoData.length; x++) {
     } 
     
   }
-
+/*
   for (x = 0; x<lolTournamentTeams.length; x++) {
     let lolTeams = lolTournamentTeams[x].teams
     let tournament_id = lolTournamentTeams[x].tournament_id
@@ -425,7 +425,7 @@ for (x = 0; x<csgoData.length; x++) {
         throw error
       }
     })
-  }
+  }*/
 })).catch(errors => {
   console.log(errors)
 })
