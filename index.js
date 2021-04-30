@@ -26,6 +26,7 @@ const pool = new Pool({
   database: 'd6neapffcb6jah',
   password: '8826d340371d2dc3f4d4f0dc4e4ba9586ee3434cdb8112f07407897987cc6ab1',
   port: 5432,
+  ssl: true
 })
 
 app.get('/', (req, res) => {
