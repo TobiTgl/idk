@@ -1,7 +1,6 @@
 const express = require('express')
 const app = express()
 const port = 4000
-const db = require('./database')
 const bodyParser = require('body-parser')
 const cors = require('cors');
 const axios = require('axios');
@@ -167,14 +166,6 @@ app.post('/register', (req,res) =>{
 })
 
 
-/*
-app.get('/users', (req, res) => {
-  db.query('SELECT * FROM users').then(results => {
-    res.json(results);
-  })
-});
-*/
-
 passport.use( new passportHttp.BasicStrategy((username, password, cb) => {
   try{
     pool.query('SELECT * FROM users WHERE login = $1', [username]).then(dbResults => {
@@ -194,10 +185,7 @@ passport.use( new passportHttp.BasicStrategy((username, password, cb) => {
             console.log("wrong password");
             return cb(null, false);
         }			
-          response.end();
-        
-      
-        
+          response.end();      
       })
   
     })
