@@ -7,9 +7,9 @@ const axios = require('axios');
 const bcrypt = require('bcryptjs');
 const passport = require('passport');
 const passportHttp = require('passport-http');
+const pool = require('./database');
 
 
-const Pool = require('pg').Pool
 
 app.use(cors());
 app.use(bodyParser.json())
@@ -18,16 +18,6 @@ app.use(
     extended: true,
   })
 )
-
-const pool = new Pool({
-  
-  user: 'mzvruebchhmeij',
-  host: 'ec2-54-225-214-37.compute-1.amazonaws.com',
-  database: 'd6neapffcb6jah',
-  password: '8826d340371d2dc3f4d4f0dc4e4ba9586ee3434cdb8112f07407897987cc6ab1',
-  port: 5432,
-  ssl: true
-})
 
 app.get('/', (req, res) => {
   res.send('Hello World! TEEEEEEEEEST')

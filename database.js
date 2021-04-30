@@ -1,4 +1,4 @@
-const Pool = require('pg').Pool
+const { Pool } = require('pg')
 
 const pool = new Pool({
   user: 'mzvruebchhmeij',
@@ -6,32 +6,22 @@ const pool = new Pool({
   database: 'd6neapffcb6jah',
   password: '8826d340371d2dc3f4d4f0dc4e4ba9586ee3434cdb8112f07407897987cc6ab1',
   port: 5432,
+  ssl: true
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 2000,
 })
 
-const getMatches = (request, response) => {
-    pool.query('SELECT * FROM matches', (error, results) => {
-      if (error) {
-        throw error
-      }
-      response.status(200).json(results.rows)
-    })
+pool.connect((err, client, release) => {
+  if (err) {
+    return console.error('Error acquiring client', err.stack)
   }
+  client.query('SELECT NOW()', (err, result) => {
+    release()
+    if (err) {
+      return console.error('Error executing query', err.stack)
+    }
+    console.log(result.rows)
+  })
+})
 
-  const insertMaches = (request, response) => {
-
-    console.log(request.body)
-    const { id, dateum, opponentone, opponenttwo, opponentonescore, opponenttwoscore} = request.body
-  
-    pool.query('INSERT INTO public.apidata(id, dateum, opponentone, opponenttwo, opponentonescore, opponenttwoscore) VALUES($1, $2, $3, $4, $5, $6)', [id, dateum, opponentone, opponenttwo, opponentonescore, opponenttwoscore], (error, results) => {
-      if (error) {
-        throw error
-      }
-      response.status(201).send(`Match added with ID: ${results.id}`)
-    })
-  }
-  
-
-module.exports = {
-  getMatches,
-  insertMaches
-};
+module.exports = pool;
